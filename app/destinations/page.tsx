@@ -1,4 +1,4 @@
-import { destinations } from "@/lib/fixtures/destinations";
+import { getAllDestinations } from "@/lib/cms/destinations";
 import { DestinationCard } from "@/components/ui/destination-card";
 
 export const metadata = {
@@ -6,7 +6,8 @@ export const metadata = {
   description: "Browse every destination in Finnish Lapland covered by VisitLappi.",
 };
 
-export default function DestinationsPage() {
+export default async function DestinationsPage() {
+  const destinations = await getAllDestinations();
   return (
     <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
       <h1 className="font-display text-4xl text-ink">Destinations</h1>

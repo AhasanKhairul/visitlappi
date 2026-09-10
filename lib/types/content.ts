@@ -18,7 +18,12 @@ export interface Destination {
   region: string;
   coordinates: { lat: number; lng: number };
   shortDescription: string;
+  fullDescription?: string;
+  /** Gradient placeholder tone, used when no real photo exists yet (fixtures, or a CMS entry with no hero image). */
   heroImage: string;
+  /** Real photo URL from the WordPress media library, when available. Takes priority over `heroImage` for rendering. */
+  heroImageUrl?: string;
+  heroImageAlt?: string;
   bestTimeToVisit: string;
   seasons: Season[];
   activityCount: number;

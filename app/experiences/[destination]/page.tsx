@@ -1,19 +1,22 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { destinations, getDestination } from "@/lib/fixtures/destinations";
+import { getAllDestinations, getDestinationBySlug } from "@/lib/cms/destinations";
 import { getExperiencesByDestination } from "@/lib/fixtures/experiences";
 import { ExperienceCard } from "@/components/ui/experience-card";
 
-export function generateStaticParams() {
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const destinations = await getAllDestinations();
   return destinations.map((d) => ({ destination: d.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: { destination: string };
 }) {
-  const destination = getDestination(params.destination);
+  const destination = await getDestinationBySlug(params.destination);
   if (!destination) return {};
   return {
     title: `Things to Do in ${destination.title}`,
@@ -23,14 +26,16 @@ export function generateMetadata({
 
 const FILTERS = ["Category", "Duration", "Price", "Rating", "Season", "Family friendly"];
 
-export default function ExperienceListingPage({
+export default async function ExperienceListingPage({
   params,
 }: {
   params: { destination: string };
 }) {
-  const destination = getDestination(params.destination);
+  const destination = await getDestinationBySlug(params.destination);
   if (!destination) notFound();
 
+  // Experience content isn't connected to the CMS yet — still fixture
+  // data here until that pass is done.
   const items = getExperiencesByDestination(destination.slug);
 
   return (

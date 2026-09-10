@@ -1,9 +1,12 @@
-import { destinations } from "@/lib/fixtures/destinations";
+import { getAllDestinations } from "@/lib/cms/destinations";
 import { DestinationCard } from "@/components/ui/destination-card";
 import { SectionHeading } from "@/components/ui/section-heading";
 
-export function PopularDestinations() {
+export async function PopularDestinations() {
+  const destinations = await getAllDestinations();
   const [feature, ...rest] = destinations;
+
+  if (!feature) return null;
   return (
     <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
       <SectionHeading

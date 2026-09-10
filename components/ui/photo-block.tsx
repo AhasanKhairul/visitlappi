@@ -1,10 +1,10 @@
+import Image from "next/image";
+
 /**
- * Stands in for real editorial photography, which will come from the WP
- * media library once the CMS is connected (see MEDIA architecture in
- * PROJECT_ARCHITECTURE.md). Deliberately an abstract duotone gradient
- * rather than a fake stock-photo look-alike, keyed to real content tones
- * (aurora, polar dusk, snowfield, birch forest) so sections aren't blank
- * while content is pending.
+ * Renders a real photo (from the WordPress media library) when one is
+ * available. Falls back to an abstract duotone gradient, keyed to real
+ * content tones (aurora, polar dusk, snowfield, birch forest), for
+ * fixture data or CMS entries that don't have a photo yet.
  */
 const TONES = {
   aurora: "from-[#0e1a2b] via-[#1f8f70] to-[#2fbe96]",
@@ -16,12 +16,29 @@ const TONES = {
 export function PhotoBlock({
   tone = "aurora",
   label,
+  src,
   className = "",
 }: {
   tone?: keyof typeof TONES;
   label?: string;
+  /** Real photo URL. When provided, this renders instead of the gradient. */
+  src?: string;
   className?: string;
 }) {
+  if (src) {
+    return (
+      <div className={`relative overflow-hidden ${className}`}>
+        <Image
+          src={src}
+          alt={label ?? ""}
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover"
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       className={`relative overflow-hidden bg-gradient-to-br ${TONES[tone]} ${className}`}

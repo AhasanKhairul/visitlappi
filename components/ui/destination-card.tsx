@@ -27,7 +27,8 @@ export function DestinationCard({
       >
         <PhotoBlock
           tone={destination.heroImage as "aurora" | "snow" | "forest"}
-          label={destination.title}
+          src={destination.heroImageUrl}
+          label={destination.heroImageAlt || destination.title}
           className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.04]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-polar/80 via-polar/10 to-transparent" />
