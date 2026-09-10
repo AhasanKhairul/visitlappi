@@ -2,87 +2,157 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAllDestinations, getDestinationBySlug } from "@/lib/cms/destinations";
 import { getExperiencesByDestination } from "@/lib/fixtures/experiences";
+import { PhotoBlock } from "@/components/ui/photo-block";
 import { ExperienceCard } from "@/components/ui/experience-card";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { ContactButtons } from "@/components/ui/contact-buttons";
 
+// New destinations published in WordPress after the last deploy still
+// render correctly — Next.js generates their page on first visit and
+// caches it, rather than 404ing until the next full redeploy.
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const destinations = await getAllDestinations();
-  return destinations.map((d) => ({ destination: d.slug }));
+  return destinations.map((d) => ({ slug: d.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ destination: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { destination: destinationSlug } = await params;
-  const destination = await getDestinationBySlug(destinationSlug);
+  const { slug } = await params;
+  const destination = await getDestinationBySlug(slug);
   if (!destination) return {};
   return {
-    title: `Things to Do in ${destination.title}`,
-    description: `Browse experiences and activities in ${destination.title}, Finnish Lapland.`,
+    title: destination.title,
+    description: destination.shortDescription,
   };
 }
 
-const FILTERS = ["Category", "Duration", "Price", "Rating", "Season", "Family friendly"];
-
-export default async function ExperienceListingPage({
+export default async function DestinationPage({
   params,
 }: {
-  params: Promise<{ destination: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { destination: destinationSlug } = await params;
-  const destination = await getDestinationBySlug(destinationSlug);
+  const { slug } = await params;
+  const destination = await getDestinationBySlug(slug);
   if (!destination) notFound();
 
   // Experience content isn't connected to the CMS yet — still fixture
-  // data here until that pass is done.
-  const items = getExperiencesByDestination(destination.slug);
+  // data for this section until that pass is done.
+  const relatedExperiences = getExperiencesByDestination(destination.slug);
+  const lat = destination.coordinates.lat.toFixed(4);
+  const lng = destination.coordinates.lng.toFixed(4);
+  const hasCoordinates = destination.coordinates.lat !== 0 || destination.coordinates.lng !== 0;
 
   return (
-    <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
-      <nav aria-label="Breadcrumb" className="text-sm text-mist">
-        <Link href="/destinations" className="hover:text-ink">
-          Destinations
-        </Link>
-        <span className="mx-2">/</span>
-        <Link href={`/destinations/${destination.slug}`} className="hover:text-ink">
-          {destination.title}
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-ink">Things to Do</span>
-      </nav>
-
-      <h1 className="mt-3 font-display text-4xl text-ink">
-        Things to Do in {destination.title}
-      </h1>
-      <p className="mt-2 text-ink/70">
-        {items.length} experience{items.length === 1 ? "" : "s"}, from Aurora
-        tours to fell skiing.
-      </p>
-
-      <div className="mt-8 flex flex-wrap gap-2 border-b border-mist-light/60 pb-6">
-        {FILTERS.map((f) => (
-          <button
-            key={f}
-            className="rounded-[3px] border border-mist-light px-3.5 py-1.5 text-sm text-ink/80 transition-colors hover:border-ink/40"
-          >
-            {f}
-          </button>
-        ))}
+    <article>
+      <div className="relative h-[60svh] min-h-[420px] w-full overflow-hidden">
+        <PhotoBlock
+          tone={destination.heroImage as "aurora" | "snow" | "forest"}
+          src={destination.heroImageUrl}
+          label={destination.heroImageAlt || destination.title}
+          className="h-full w-full"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-polar via-polar/20 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-5 pb-10 sm:px-8">
+          <nav aria-label="Breadcrumb" className="mb-3 text-sm text-paper/70">
+            <Link href="/destinations" className="hover:text-paper">
+              Destinations
+            </Link>
+            <span className="mx-2">/</span>
+            <span className="text-paper">{destination.title}</span>
+          </nav>
+          {hasCoordinates && (
+            <span className="coord-label text-paper/60">
+              {lat}°N, {lng}°E{destination.region ? ` — ${destination.region}` : ""}
+            </span>
+          )}
+          <h1 className="mt-2 font-display text-4xl text-paper sm:text-5xl">
+            {destination.title}
+          </h1>
+          {destination.shortDescription && (
+            <p className="mt-3 max-w-2xl text-lg text-paper/85">
+              {destination.shortDescription}
+            </p>
+          )}
+        </div>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {items.length ? (
-          items.map((e) => <ExperienceCard key={e.slug} experience={e} />)
-        ) : (
-          <p className="text-mist">
-            No experiences published for {destination.title} yet — check
-            back soon.
-          </p>
-        )}
+      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[2fr_1fr]">
+        <div>
+          {destination.fullDescription ? (
+            <div
+              className="prose prose-headings:font-display max-w-2xl text-ink/80"
+              dangerouslySetInnerHTML={{ __html: destination.fullDescription }}
+            />
+          ) : null}
+
+          <section className="mt-10">
+            <SectionHeading title="Things to do" seeAllHref={`/experiences/${destination.slug}`} />
+            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {relatedExperiences.length ? (
+                relatedExperiences.map((e) => (
+                  <ExperienceCard key={e.slug} experience={e} />
+                ))
+              ) : (
+                <p className="text-mist">
+                  Experiences for {destination.title} are being added.
+                </p>
+              )}
+            </div>
+          </section>
+        </div>
+
+        <aside className="space-y-8">
+          <div className="rounded-[6px] border border-mist-light/70 p-6">
+            <h2 className="font-display text-lg text-ink">Practical info</h2>
+            <dl className="mt-4 space-y-4 text-sm">
+              {destination.bestTimeToVisit && (
+                <div>
+                  <dt className="text-mist">Best time to visit</dt>
+                  <dd className="mt-1 text-ink">{destination.bestTimeToVisit}</dd>
+                </div>
+              )}
+              {destination.region && (
+                <div>
+                  <dt className="text-mist">Region</dt>
+                  <dd className="mt-1 text-ink">{destination.region}</dd>
+                </div>
+              )}
+              {hasCoordinates && (
+                <div>
+                  <dt className="text-mist">Coordinates</dt>
+                  <dd className="mt-1 text-ink">{lat}°N, {lng}°E</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+
+          <div className="rounded-[6px] bg-polar p-6 text-paper">
+            <h2 className="font-display text-lg">Need an airport transfer?</h2>
+            <p className="mt-2 text-sm text-paper/75">
+              Private and shared transfers to {destination.title}, booked
+              directly with a local operator.
+            </p>
+            <div className="mt-4">
+              <ContactButtons
+                message={`Hi, I'd like a transfer quote to ${destination.title}.`}
+              />
+            </div>
+            <a
+              href="https://finnranetwork.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-block text-xs text-paper/60 underline decoration-paper/30 underline-offset-4 hover:text-paper"
+            >
+              Or browse all Finnra services
+            </a>
+          </div>
+        </aside>
       </div>
-    </div>
+    </article>
   );
 }
