@@ -49,7 +49,7 @@ export default async function DestinationPage({
 
   return (
     <article>
-      <div className="relative h-[56svh] min-h-[380px] w-full overflow-hidden">
+      <div className="relative h-[60svh] min-h-[420px] w-full overflow-hidden">
         <PhotoBlock
           tone={destination.heroImage as "aurora" | "snow" | "forest"}
           src={destination.heroImageUrl}
@@ -73,6 +73,11 @@ export default async function DestinationPage({
           <h1 className="mt-2 font-display text-4xl text-paper sm:text-5xl">
             {destination.title}
           </h1>
+          {destination.shortDescription && (
+            <p className="mt-3 max-w-2xl text-lg text-paper/85">
+              {destination.shortDescription}
+            </p>
+          )}
         </div>
       </div>
 
@@ -83,11 +88,7 @@ export default async function DestinationPage({
               className="prose prose-headings:font-display max-w-2xl text-ink/80"
               dangerouslySetInnerHTML={{ __html: destination.fullDescription }}
             />
-          ) : (
-            <p className="max-w-2xl text-lg text-ink/80">
-              {destination.shortDescription}
-            </p>
-          )}
+          ) : null}
 
           <section className="mt-10">
             <SectionHeading title="Things to do" seeAllHref={`/experiences/${destination.slug}`} />
