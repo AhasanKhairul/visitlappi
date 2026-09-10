@@ -14,9 +14,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { destination: string };
+  params: Promise<{ destination: string }>;
 }) {
-  const destination = await getDestinationBySlug(params.destination);
+  const { destination: destinationSlug } = await params;
+  const destination = await getDestinationBySlug(destinationSlug);
   if (!destination) return {};
   return {
     title: `Things to Do in ${destination.title}`,
@@ -29,9 +30,10 @@ const FILTERS = ["Category", "Duration", "Price", "Rating", "Season", "Family fr
 export default async function ExperienceListingPage({
   params,
 }: {
-  params: { destination: string };
+  params: Promise<{ destination: string }>;
 }) {
-  const destination = await getDestinationBySlug(params.destination);
+  const { destination: destinationSlug } = await params;
+  const destination = await getDestinationBySlug(destinationSlug);
   if (!destination) notFound();
 
   // Experience content isn't connected to the CMS yet — still fixture

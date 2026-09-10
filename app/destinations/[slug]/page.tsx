@@ -20,9 +20,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const destination = await getDestinationBySlug(params.slug);
+  const { slug } = await params;
+  const destination = await getDestinationBySlug(slug);
   if (!destination) return {};
   return {
     title: destination.title,
@@ -33,9 +34,10 @@ export async function generateMetadata({
 export default async function DestinationPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const destination = await getDestinationBySlug(params.slug);
+  const { slug } = await params;
+  const destination = await getDestinationBySlug(slug);
   if (!destination) notFound();
 
   // Experience content isn't connected to the CMS yet — still fixture
