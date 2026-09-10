@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   VisitLappi design tokens.
+   Palette: polar night navy, cool frost paper, aurora teal-green,
+   burnt copper (birch/cabin warmth), ink text.
+   Chosen to read as Arctic-specific, not a generic SaaS/cream+terracotta
+   default.
+------------------------------------------------------------------*/
+
+:root {
+  --color-polar: #0e1a2b;
+  --color-polar-deep: #081120;
+  --color-paper: #eff2f0;
+  --color-paper-raised: #ffffff;
+  --color-aurora: #2fbe96;
+  --color-aurora-dim: #1f8f70;
+  --color-copper: #b5652f;
+  --color-ink: #10161f;
+  --color-mist: #5b6672;
+  --color-mist-light: #c9d0d4;
+  --color-error: #b3432f;
+}
+
+@theme inline {
+  --color-polar: var(--color-polar);
+  --color-polar-deep: var(--color-polar-deep);
+  --color-paper: var(--color-paper);
+  --color-paper-raised: var(--color-paper-raised);
+  --color-aurora: var(--color-aurora);
+  --color-aurora-dim: var(--color-aurora-dim);
+  --color-copper: var(--color-copper);
+  --color-ink: var(--color-ink);
+  --color-mist: var(--color-mist);
+  --color-mist-light: var(--color-mist-light);
+  --color-error: var(--color-error);
+
+  --font-display: var(--font-newsreader);
+  --font-sans: var(--font-archivo);
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 14px;
+
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-aurora);
+  color: var(--color-polar);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-aurora);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Coordinate / latitude micro-label -- a wayfinding device grounded in
+   the site's actual subject matter (Arctic latitude), not decoration. */
+.coord-label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  letter-spacing: 0.03em;
+  color: var(--color-mist);
+}
