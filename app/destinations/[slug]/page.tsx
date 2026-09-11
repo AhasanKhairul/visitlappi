@@ -85,7 +85,7 @@ export default async function DestinationPage({
         <div>
           {destination.fullDescription ? (
             <div
-              className="prose prose-headings:font-display max-w-2xl text-ink/80"
+              className="prose prose-headings:font-display prose-p:mb-6 prose-p:leading-relaxed max-w-2xl text-ink/80"
               dangerouslySetInnerHTML={{ __html: destination.fullDescription }}
             />
           ) : null}
