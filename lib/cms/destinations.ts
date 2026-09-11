@@ -64,7 +64,7 @@ export async function getAllDestinations(): Promise<Destination[]> {
       destinations: { nodes: RawDestination[] };
     }>(`
       query AllDestinations {
-        destinations(first: 100) {
+        destinations(first: 100, where: { orderby: { field: MENU_ORDER, order: ASC } }) {
           nodes { ${DESTINATION_FIELDS} }
         }
       }
