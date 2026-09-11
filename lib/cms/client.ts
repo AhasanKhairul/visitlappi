@@ -10,7 +10,7 @@ export class CmsFetchError extends Error {}
 export async function fetchGraphQL<T>(
   query: string,
   variables?: Record<string, unknown>,
-  revalidateSeconds = 3600
+  revalidateSeconds = 60
 ): Promise<T> {
   const res = await fetch(WORDPRESS_API_URL, {
     method: "POST",
