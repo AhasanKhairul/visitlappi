@@ -1,19 +1,27 @@
-import { PhotoBlock } from "@/components/ui/photo-block";
+import { HeroMedia } from "@/components/ui/hero-media";
 import { SearchBox } from "@/components/ui/search-box";
+import { getHomepageSettings } from "@/lib/cms/homepage-settings";
 
-export function Hero() {
+export async function Hero() {
+  const settings = await getHomepageSettings();
+
   return (
     <section className="relative">
       <div className="relative h-[78svh] min-h-[520px] w-full overflow-hidden">
-        <PhotoBlock tone="aurora" label="Aurora over Finnish Lapland" className="h-full w-full" />
+        <HeroMedia
+          videoUrl={settings.heroVideoUrl}
+          imageUrl={settings.heroImageUrl}
+          imageAlt={settings.heroImageAlt || "Northern Lights over Finnish Lapland"}
+          className="absolute inset-0"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-polar via-polar/30 to-polar/10" />
 
         <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-24 sm:px-8">
           <span className="coord-label text-paper/60">66°33&apos;N — the Arctic Circle</span>
-          <h1 className="mt-3 max-w-2xl font-display text-5xl leading-[1.05] text-paper sm:text-6xl">
+          <h1 className="mt-3 max-w-3xl font-impact text-6xl uppercase leading-[0.95] tracking-tight text-paper sm:text-7xl">
             Discover Finnish Lapland
           </h1>
-          <p className="mt-4 max-w-lg text-lg text-paper/80">
+          <p className="mt-5 max-w-lg text-lg text-paper/80">
             Arctic wilderness, Northern Lights and unhurried Nordic days —
             planned by people who live here.
           </p>

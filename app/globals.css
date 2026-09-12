@@ -37,6 +37,7 @@
 
   --font-display: var(--font-newsreader);
   --font-sans: var(--font-archivo);
+  --font-impact: var(--font-anton);
 
   --radius-sm: 3px;
   --radius-md: 6px;
