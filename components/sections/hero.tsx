@@ -18,7 +18,7 @@ export async function Hero() {
 
         <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-24 sm:px-8">
           <span className="coord-label text-paper/60">66°33&apos;N — the Arctic Circle</span>
-          <h1 className="mt-3 max-w-3xl font-impact text-6xl uppercase leading-[0.95] tracking-tight text-paper sm:text-7xl">
+          <h1 className="mt-3 max-w-3xl font-impact text-6xl uppercase leading-[0.95] tracking-wide text-paper sm:text-7xl">
             Discover Finnish Lapland
           </h1>
           <p className="mt-5 max-w-lg text-lg text-paper/80">
