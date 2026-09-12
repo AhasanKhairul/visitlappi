@@ -22,8 +22,8 @@ export async function Hero() {
             Discover Finnish Lapland
           </h1>
           <p className="mt-5 max-w-lg text-lg text-paper/80">
-            Arctic wilderness, Northern Lights and unhurried Nordic days —
-            planned by people who live here.
+            Where silence has a sound, cold has a feeling, and nature has a
+            thousand colors — welcome to Lappi.
           </p>
         </div>
       </div>
